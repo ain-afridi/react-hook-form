@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 
 let renderCount = 0;
@@ -6,18 +6,51 @@ interface FormValue {
   username: string;
   email: string;
   channel: string;
+  social: {
+    facebook: string;
+    twitter: string;
+  };
+  phoneNumbers: string[];
+  phNumbers: {
+    number: string;
+  }[];
 }
 
 export const YoutubeForm = () => {
   const form = useForm<FormValue>({
     defaultValues: {
-      username: '',
-      email: '',
-      channel: ''
-    }
+      username: "",
+      email: "",
+      channel: "",
+      social: {
+        facebook: "",
+        twitter: "",
+      },
+      phoneNumbers: ["", ""],
+      phNumbers: [{ number: "" }],
+    },
+    // defaultValues: async() => {
+
+    //   const response = await fetch(
+    //     `https://jsonplaceholder.typicode.com/users/1`
+    //   );
+    //   const data = await response.json();
+
+    //   return {
+    //     username: 'Batman',
+    //     email: data.email,
+    //     channel: ''
+    //   }
+    // }
   });
 
   const { register, control, handleSubmit, formState } = form;
+
+  const { fields, append, remove } = useFieldArray({
+    name: "phNumbers",
+    control,
+  });
+
   const { errors } = formState;
   renderCount++;
 
@@ -91,7 +124,75 @@ export const YoutubeForm = () => {
           <p className="error">{errors.channel?.message}</p>
         </div>
 
-        <button>Submit</button>
+        <div className="form-control">
+          <label htmlFor="twitter">Twitter</label>
+          <input
+            type="text"
+            id="twitter"
+            {...register("social.twitter", {
+              required: "Twitter is required",
+            })}
+          />
+          <p className="error">{errors.social?.twitter?.message}</p>
+        </div>
+
+        <div className="form-control">
+          <label htmlFor="facebook">Facebook</label>
+          <input
+            type="text"
+            id="facebook"
+            {...register("social.facebook", {
+              required: "Facebook is required",
+            })}
+          />
+          <p className="error">{errors.social?.facebook?.message}</p>
+        </div>
+
+        <div className="form-control">
+          <label htmlFor="primary-phone-number">Primary phone number</label>
+          <input
+            type="text"
+            id="primary-phone-number"
+            {...register("phoneNumbers.0", {
+              required: "Primary Phone Number is required",
+            })}
+          />
+          {errors.phoneNumbers?.length && (
+            <p className="error">{errors.phoneNumbers[0]?.message}</p>
+          )}
+        </div>
+
+        <div className="form-control">
+          <label htmlFor="secondary-phone-number">Secondary phone number</label>
+          <input
+            type="text"
+            id="secondary-phone-number"
+            {...register("phoneNumbers.1", {
+              required: "Secondary phone number is required",
+            })}
+          />
+          {errors.phoneNumbers?.length && (
+            <p className="error">{errors.phoneNumbers[1]?.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="">List of Phone Numbers</label>
+          {fields.map((field, index) => (
+            <div className="form-control" key={field.id}>
+              <input type="text" {...register(`phNumbers.${index}.number`)} />
+
+              {index > 0 && (
+                <button type="button" onClick={() => remove(index)}>remove</button>
+              )}
+            </div>
+          ))}
+          <button type="button" onClick={() => append({ number: "" })}>
+            Add New Phone Number
+          </button>
+        </div>
+
+        <button type="submit">Submit</button>
       </form>
       <DevTool control={control} />
     </div>
