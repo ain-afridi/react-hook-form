@@ -49,7 +49,7 @@ export const YoutubeForm = () => {
     // }
   });
 
-  const { register, control, handleSubmit, formState, watch } = form;
+  const { register, control, handleSubmit, formState, watch, getValues } = form;
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -79,6 +79,11 @@ export const YoutubeForm = () => {
 
     return () => subscription.unsubscribe();
   }, [watch])
+
+  const handleGetValues = () => {
+    console.log("Get Values", getValues());
+    
+  }
   
 
   return (
@@ -251,6 +256,8 @@ export const YoutubeForm = () => {
         </div>
 
         <button type="submit">Submit</button>
+
+        <button type="button" onClick={handleGetValues}>Get Values</button>
       </form>
       <DevTool control={control} />
     </div>
