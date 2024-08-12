@@ -48,7 +48,7 @@ export const YoutubeForm = () => {
     // }
   });
 
-  const { register, control, handleSubmit, formState, getValues, setValue, } = form;
+  const { register, control, handleSubmit, formState, getValues, setValue, watch } = form;
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -122,6 +122,10 @@ export const YoutubeForm = () => {
             type="email"
             id="email"
             {...register("email", {
+              required: {
+                value: true,
+                message: 'Email is required'
+              },
               pattern: {
                 value:
                   /^[a-zA-Z0-9. !#$%&'*+/=?^_` {|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -169,6 +173,7 @@ export const YoutubeForm = () => {
             type="text"
             id="twitter"
             {...register("social.twitter", {
+              disabled: watch('channel') === "",
               required: "Twitter is required",
             })}
           />
