@@ -1,6 +1,5 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { useEffect } from "react";
 
 let renderCount = 0;
 interface FormValue {
@@ -22,7 +21,7 @@ interface FormValue {
 export const YoutubeForm = () => {
   const form = useForm<FormValue>({
     defaultValues: {
-      username: "",
+      username: "Ain ul Haq",
       email: "",
       channel: "",
       social: {
@@ -49,14 +48,18 @@ export const YoutubeForm = () => {
     // }
   });
 
-  const { register, control, handleSubmit, formState, watch, getValues } = form;
+  const { register, control, handleSubmit, formState, getValues, setValue, } = form;
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
     control,
   });
 
-  const { errors } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+
+  console.log('TouchedFields', touchedFields);
+  console.log('DirtyFields', dirtyFields);
+  console.log('isDirty', isDirty)
   renderCount++;
 
   const submit = (data: FormValue) => {
@@ -72,17 +75,24 @@ export const YoutubeForm = () => {
   // for all values
   // watch()
 
-  useEffect(() => {
-    const subscription = watch((value) => {
-      console.log(value)
-    })
+  // useEffect(() => {
+  //   const subscription = watch((value) => {
+  //     console.log(value)
+  //   })
 
-    return () => subscription.unsubscribe();
-  }, [watch])
+  //   return () => subscription.unsubscribe();
+  // }, [watch])
 
   const handleGetValues = () => {
     console.log("Get Values", getValues());
-    
+  }
+
+  const handleSetValue = () => {
+    setValue('username', '', {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true
+    })
   }
   
 
@@ -257,7 +267,12 @@ export const YoutubeForm = () => {
 
         <button type="submit">Submit</button>
 
-        <button type="button" onClick={handleGetValues}>Get Values</button>
+        <button type="button" onClick={handleGetValues}>
+          Get Values
+        </button>
+        <button type="button" onClick={handleSetValue}>
+          Set Values
+        </button>
       </form>
       <DevTool control={control} />
     </div>
