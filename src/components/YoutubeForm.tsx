@@ -58,9 +58,15 @@ export const YoutubeForm = () => {
   const {
     errors,
     isDirty,
-    isValid
+    isValid,
+    isSubmitting,
+    isSubmitted,
+    isSubmitSuccessful,
+    submitCount
     // touchedFields, dirtyFields, 
   } = formState;
+
+  console.log({isSubmitting, isSubmitted, isSubmitSuccessful, submitCount})
 
   // console.log('TouchedFields', touchedFields);
   // console.log('DirtyFields', dirtyFields);
