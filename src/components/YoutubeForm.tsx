@@ -34,6 +34,7 @@ export const YoutubeForm = () => {
       age: 0,
       dob: new Date(),
     },
+    mode: 'onBlur',
     // defaultValues: async() => {
 
     //   const response = await fetch(
@@ -58,6 +59,7 @@ export const YoutubeForm = () => {
     setValue,
     watch,
     reset,
+    trigger
   } = form;
 
   const { fields, append, remove } = useFieldArray({
@@ -69,14 +71,14 @@ export const YoutubeForm = () => {
     errors,
     isDirty,
     isValid,
-    isSubmitting,
-    isSubmitted,
+    // isSubmitting,
+    // isSubmitted,
     isSubmitSuccessful,
-    submitCount,
+    // submitCount,
     // touchedFields, dirtyFields,
   } = formState;
 
-  console.log({ isSubmitting, isSubmitted, isSubmitSuccessful, submitCount });
+  // console.log({ isSubmitting, isSubmitted, isSubmitSuccessful, submitCount });
 
   // console.log('TouchedFields', touchedFields);
   // console.log('DirtyFields', dirtyFields);
@@ -178,6 +180,14 @@ export const YoutubeForm = () => {
                     !fieldValue.endsWith("baddomain.com") ||
                     "This domain is not supported"
                   );
+                },
+                emailAvaliable: async (fieldValue) => {
+                  const response = await fetch(
+                    `https://jsonplaceholder.typicode.com/users?email=${fieldValue}`
+                  );
+                  const data = await response.json();
+
+                  return data.length === 0 || "Email already exists";
                 },
               },
             })}
@@ -305,6 +315,9 @@ export const YoutubeForm = () => {
             Submit
           </button>
 
+          <button type="button" onClick={() => trigger()}>
+            Validation
+          </button>
           <button type="button" onClick={handleGetValues}>
             Get Values
           </button>
