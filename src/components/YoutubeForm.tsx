@@ -55,11 +55,16 @@ export const YoutubeForm = () => {
     control,
   });
 
-  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  const {
+    errors,
+    isDirty,
+    isValid
+    // touchedFields, dirtyFields, 
+  } = formState;
 
-  console.log('TouchedFields', touchedFields);
-  console.log('DirtyFields', dirtyFields);
-  console.log('isDirty', isDirty)
+  // console.log('TouchedFields', touchedFields);
+  // console.log('DirtyFields', dirtyFields);
+  // console.log('isDirty', isDirty)
   renderCount++;
 
   const submit = (data: FormValue) => {
@@ -105,6 +110,7 @@ export const YoutubeForm = () => {
       <h1>Youtube Form {renderCount / 2}</h1>
       {/* <h2>Form : { JSON.stringify(watch()) }</h2> */}
       <form onSubmit={handleSubmit(submit, onError)} noValidate>
+        
         <div className="form-control">
           <label htmlFor="username">Username</label>
           <input
@@ -128,7 +134,7 @@ export const YoutubeForm = () => {
             {...register("email", {
               required: {
                 value: true,
-                message: 'Email is required'
+                message: "Email is required",
               },
               pattern: {
                 value:
@@ -177,7 +183,7 @@ export const YoutubeForm = () => {
             type="text"
             id="twitter"
             {...register("social.twitter", {
-              disabled: watch('channel') === "",
+              disabled: watch("channel") === "",
               required: "Twitter is required",
             })}
           />
@@ -274,14 +280,18 @@ export const YoutubeForm = () => {
           <p className="error">{errors.dob?.message}</p>
         </div>
 
-        <button type="submit">Submit</button>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+          <button type="submit" disabled={!isDirty || !isValid}>
+            Submit
+          </button>
 
-        <button type="button" onClick={handleGetValues}>
-          Get Values
-        </button>
-        <button type="button" onClick={handleSetValue}>
-          Set Values
-        </button>
+          <button type="button" onClick={handleGetValues}>
+            Get Values
+          </button>
+          <button type="button" onClick={handleSetValue}>
+            Set Values
+          </button>
+        </div>
       </form>
       <DevTool control={control} />
     </div>
