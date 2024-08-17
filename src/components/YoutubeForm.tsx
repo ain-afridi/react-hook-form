@@ -1,5 +1,6 @@
 import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { useEffect } from "react";
 
 let renderCount = 0;
 interface FormValue {
@@ -14,8 +15,8 @@ interface FormValue {
   phNumbers: {
     number: string;
   }[];
-  age: number,
-  dob: Date
+  age: number;
+  dob: Date;
 }
 
 export const YoutubeForm = () => {
@@ -31,7 +32,7 @@ export const YoutubeForm = () => {
       phoneNumbers: ["", ""],
       phNumbers: [{ number: "" }],
       age: 0,
-      dob: new Date()
+      dob: new Date(),
     },
     // defaultValues: async() => {
 
@@ -48,7 +49,16 @@ export const YoutubeForm = () => {
     // }
   });
 
-  const { register, control, handleSubmit, formState, getValues, setValue, watch } = form;
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    getValues,
+    setValue,
+    watch,
+    reset,
+  } = form;
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -62,11 +72,11 @@ export const YoutubeForm = () => {
     isSubmitting,
     isSubmitted,
     isSubmitSuccessful,
-    submitCount
-    // touchedFields, dirtyFields, 
+    submitCount,
+    // touchedFields, dirtyFields,
   } = formState;
 
-  console.log({isSubmitting, isSubmitted, isSubmitSuccessful, submitCount})
+  console.log({ isSubmitting, isSubmitted, isSubmitSuccessful, submitCount });
 
   // console.log('TouchedFields', touchedFields);
   // console.log('DirtyFields', dirtyFields);
@@ -78,8 +88,14 @@ export const YoutubeForm = () => {
   };
 
   const onError = (errors: FieldErrors<FormValue>) => {
-    console.log('errors', errors);
-  }
+    console.log("errors", errors);
+  };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [reset, isSubmitSuccessful]);
 
   // for specific value use
   // watch("username")
@@ -100,23 +116,21 @@ export const YoutubeForm = () => {
 
   const handleGetValues = () => {
     console.log("Get Values", getValues());
-  }
+  };
 
   const handleSetValue = () => {
-    setValue('username', '', {
+    setValue("username", "", {
       shouldDirty: true,
       shouldTouch: true,
-      shouldValidate: true
-    })
-  }
-  
+      shouldValidate: true,
+    });
+  };
 
   return (
     <div>
       <h1>Youtube Form {renderCount / 2}</h1>
       {/* <h2>Form : { JSON.stringify(watch()) }</h2> */}
       <form onSubmit={handleSubmit(submit, onError)} noValidate>
-        
         <div className="form-control">
           <label htmlFor="username">Username</label>
           <input
@@ -286,7 +300,7 @@ export const YoutubeForm = () => {
           <p className="error">{errors.dob?.message}</p>
         </div>
 
-        <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <button type="submit" disabled={!isDirty || !isValid}>
             Submit
           </button>
