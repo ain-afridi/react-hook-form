@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { useEffect } from "react";
-import * as yup from "yup";
-import {yupResolver} from '@hookform/resolvers/yup';
+import {z} from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const schema = yup.object({
-    username: yup.string().required("Username is required"),
-    email: yup.string().email("Email format is valid").required("Email is required"),
-    channel: yup.string().required("Channel is required")
+const schema = z.object({
+    username: z.string().nonempty("Username is required"),
+    email: z.string().nonempty("Email is required").email("Email format is valid"),
+    channel: z.string().nonempty("Channel is required")
 })
 
 let renderCount = 0;
@@ -17,30 +17,19 @@ interface FormValue {
   channel: string;
 }
 
-export const YupYoutubeForm = () => {
+export const ZodYoutubeForm = () => {
   const form = useForm<FormValue>({
     defaultValues: {
       username: "",
       email: "",
       channel: "",
-      },
-      resolver: yupResolver(schema)
+    },
+    resolver: zodResolver(schema),
   });
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState,
-    reset,
-  } = form;
+  const { register, control, handleSubmit, formState, reset } = form;
 
-
-  const {
-    errors,
-    isSubmitSuccessful,
-  } = formState;
-
+  const { errors, isSubmitSuccessful } = formState;
 
   renderCount++;
 
@@ -54,46 +43,31 @@ export const YupYoutubeForm = () => {
     }
   }, [reset, isSubmitSuccessful]);
 
-
   return (
     <div>
-      <h1>Yup Youtube Form {renderCount / 2}</h1>
+      <h1>Zod Youtube Form {renderCount / 2}</h1>
       {/* <h2>Form : { JSON.stringify(watch()) }</h2> */}
       <form onSubmit={handleSubmit(submit)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            {...register("username")}
-          />
+          <input type="text" id="username" {...register("username")} />
           <p className="error">{errors.username?.message}</p>
         </div>
 
         <div className="form-control">
           <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            {...register("email")}
-          />
+          <input type="email" id="email" {...register("email")} />
           <p className="error">{errors.email?.message}</p>
         </div>
 
         <div className="form-control">
           <label htmlFor="channel">Channel</label>
-          <input
-            type="text"
-            id="channel"
-            {...register("channel")}
-          />
+          <input type="text" id="channel" {...register("channel")} />
           <p className="error">{errors.channel?.message}</p>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <button type="submit">
-            Submit
-          </button>
+          <button type="submit">Submit</button>
         </div>
       </form>
       <DevTool control={control} />
